@@ -13,6 +13,11 @@ To clean the directory run clean.sh
 Sample datas are stores in *.in.sample files. If you want to try the integrator just run the compile.sh
 and answer "yes" for the question about creating sample files.
 
+*Modification by Quan-Zhi Ye*
+Sep 17, 2014
+
+Radiation force and Poynting-Robertson drags are added, thanks to Paul Wiegert and Man-To Hui's discussions. The below message has been modified accordingly.
+
 **Original message by John E. Chambers**
 
 
@@ -326,6 +331,10 @@ and answer "yes" for the question about creating sample files.
 
              a3 = X   where X is a real number, to indicate the A1 non-gravitational
                       force parameter for this body (the default is 0).
+                      
+             b = X    where X is a real number, to indicate the beta parameter (ratio
+                      between radiation force and gravitational force) for this body
+                      (the default is 0).
 
              E.g. the line might look something like this:
                MARS   m=3.22715144505386530E-07 d= 3.94

@@ -1,6 +1,7 @@
 c%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 c
 c      MERCURY.INC    (ErikSoft   4 March 2001)
+c                     (Q.-Z. Ye  10 September 2014)
 c
 c%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 c
@@ -20,7 +21,7 @@ c
       parameter (NMAX = 2000)
       parameter (CMAX = 50)
       parameter (NMESS = 200)
-      parameter (HUGE = 9.9d29)
+      parameter (HUGE = 9.9d99)
       parameter (NFILES = 50)
 c
 c------------------------------------------------------------------------------
@@ -31,8 +32,10 @@ c DR = conversion factor from degrees to radians
 c K2 = Gaussian gravitational constant squared
 c AU = astronomical unit in cm
 c MSUN = mass of the Sun in g
+c LSUN = solar luminosity in erg/s
+c CS = speed of light in AU/day
 c
-      real*8 PI,TWOPI,PIBY2,DR,K2,AU,MSUN
+      real*8 PI,TWOPI,PIBY2,DR,K2,AU,MSUN,CS
 c
       parameter (PI = 3.141592653589793d0)
       parameter (TWOPI = PI * 2.d0)
@@ -41,3 +44,4 @@ c
       parameter (K2 = 2.959122082855911d-4)
       parameter (AU = 1.4959787e13)
       parameter (MSUN = 1.9891e33)
+      parameter (CS = 173.145d0)
