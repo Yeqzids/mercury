@@ -275,8 +275,8 @@ c
       include 'mercury.inc'
 c
 c Input/Output
-      integer algor,nbod,nbig,stat(nbod),opt(8),opflag,ngflag,ndump,nfun
-      integer lmem(NMESS)
+      integer algor,nbod,nbig,stat(nbod),opt(8),opflag,ngflag
+      integer ndump,nfun,lmem(NMESS)
       real*8 time,tstart,tstop,dtout,h0,tol,jcen(3),rcen,rmax
       real*8 en(3),am(3),cefac,m(nbod),xh(3,nbod),vh(3,nbod)
       real*8 s(3,nbod),rho(nbod),rceh(nbod),ngf(4,nbod)
@@ -1917,6 +1917,7 @@ c Local
       integer j,k,iflag,stat(NMAX)
       real*8 minside,msofar,gm(NMAX),a(3,NMAX),xj(3,NMAX),vj(3,NMAX)
       real*8 ha(2),hb(2),rt10,angf(3,NMAX),ausr(3,NMAX),arpr(3,NMAX)
+      real*8 apn(3,NMAX)
 c
 c------------------------------------------------------------------------------
 c
@@ -1965,6 +1966,7 @@ c Advance Interaction Hamiltonian
 c
 c If required, apply non-gravitational, radiation pressure, PR drag
 c and user-defined forces
+        if (opt(7).eq.1) call mfo_pn (nbod,nbig,m,xh,vh,apn)
         if (opt(8).eq.1) call mfo_user (time,jcen,nbod,nbig,m,xh,vh,
      %    ausr)
         if (ngflag.eq.1.or.ngflag.eq.3) call mfo_ngf (nbod,xh,vh,angf,
@@ -1974,11 +1976,11 @@ c and user-defined forces
 c
         do j = 2, nbod
           vh(1,j) = vh(1,j)  -  hb(k) * (angf(1,j) + ausr(1,j) + a(1,j)
-     % + arpr(1,j))
+     % + arpr(1,j) + apn(1,j))
           vh(2,j) = vh(2,j)  -  hb(k) * (angf(2,j) + ausr(2,j) + a(2,j)
-     % + arpr(2,j))
+     % + arpr(2,j) + apn(2,j))
           vh(3,j) = vh(3,j)  -  hb(k) * (angf(3,j) + ausr(3,j) + a(3,j)
-     % + arpr(3,j))
+     % + arpr(3,j) + apn(3,j))
         end do
 c
 c Advance Keplerian Hamiltonian (Jacobi/helio coords for Big/Small bodies)
@@ -2000,6 +2002,7 @@ c Advance Interaction Hamiltonian
 c
 c If required, apply non-gravitational, radiation pressure and PR drag
 c and user-defined forces
+        if (opt(7).eq.1) call mfo_pn (nbod,nbig,m,xh,vh,apn)
         if (opt(8).eq.1) call mfo_user (time,jcen,nbod,nbig,m,xh,vh,
      %    ausr)
         if (ngflag.eq.1.or.ngflag.eq.3) call mfo_ngf (nbod,xh,vh,angf,
@@ -2009,11 +2012,11 @@ c and user-defined forces
 c
         do j = 2, nbod
           vh(1,j) = vh(1,j)  +  hb(k) * (angf(1,j) + ausr(1,j) + a(1,j)
-     % + arpr(1,j))
+     % + arpr(1,j) + apn(1,j))
           vh(2,j) = vh(2,j)  +  hb(k) * (angf(2,j) + ausr(2,j) + a(2,j)
-     % + arpr(2,j))
+     % + arpr(2,j) + apn(2,j))
           vh(3,j) = vh(3,j)  +  hb(k) * (angf(3,j) + ausr(3,j) + a(3,j)
-     % + arpr(3,j))
+     % + arpr(3,j) + apn(3,j))
         end do
 c
 c Advance Keplerian Hamiltonian (Jacobi/helio coords for Big/Small bodies)
@@ -2241,6 +2244,7 @@ c Local
       integer j,k,iflag,stat(NMAX)
       real*8 minside,msofar,gm(NMAX),a(3,NMAX),xj(3,NMAX),vj(3,NMAX)
       real*8 ha(2),hb(2),rt10,angf(3,NMAX),ausr(3,NMAX),arpr(3,NMAX)
+      real*8 apn(3,NMAX)
 c
 c------------------------------------------------------------------------------
 c
@@ -2288,6 +2292,7 @@ c Advance Interaction Hamiltonian
 c
 c If required, apply non-gravitational, radiation force, PR drag
 c and user-defined forces
+        if (opt(7).eq.1) call mfo_pn (nbod,nbig,m,xh,vh,apn)
         if (opt(8).eq.1) call mfo_user (time,jcen,nbod,nbig,m,x,v,ausr)
         if (ngflag.eq.1.or.ngflag.eq.3) call mfo_ngf (nbod,x,v,angf,ngf)
         if (ngflag.eq.2.or.ngflag.eq.3) call mfo_pr (nbod,xh,vh,arpr,
@@ -2295,11 +2300,11 @@ c and user-defined forces
 c
         do j = 2, nbod
           v(1,j) = v(1,j)  +  hb(k) * (angf(1,j) + ausr(1,j) + a(1,j)
-     % + arpr(1,j))
+     % + arpr(1,j) + apn(1,j))
           v(2,j) = v(2,j)  +  hb(k) * (angf(2,j) + ausr(2,j) + a(2,j)
-     % + arpr(2,j))
+     % + arpr(2,j) + apn(2,j))
           v(3,j) = v(3,j)  +  hb(k) * (angf(3,j) + ausr(3,j) + a(3,j)
-     % + arpr(3,j))
+     % + arpr(3,j) + apn(3,j))
         end do
 c
 c Advance Keplerian Hamiltonian (Jacobi/helio coords for Big/Small bodies)
@@ -2321,6 +2326,7 @@ c Advance Interaction Hamiltonian
 c
 c If required, apply non-gravitational, radiation force, PR drag
 c and user-defined forces
+        if (opt(7).eq.1) call mfo_pn (nbod,nbig,m,xh,vh,apn)
         if (opt(8).eq.1) call mfo_user (time,jcen,nbod,nbig,m,x,v,ausr)
         if (ngflag.eq.1.or.ngflag.eq.3) call mfo_ngf (nbod,x,v,angf,ngf)
         if (ngflag.eq.2.or.ngflag.eq.3) call mfo_pr (nbod,xh,vh,arpr,
@@ -2328,11 +2334,11 @@ c and user-defined forces
 c
         do j = 2, nbod
           v(1,j) = v(1,j)  -  hb(k) * (angf(1,j) + ausr(1,j) + a(1,j)
-     % + arpr(1,j))
+     % + arpr(1,j) + apn(1,j))
           v(2,j) = v(2,j)  -  hb(k) * (angf(2,j) + ausr(2,j) + a(2,j)
-     % + arpr(2,j))
+     % + arpr(2,j) + apn(2,j))
           v(3,j) = v(3,j)  -  hb(k) * (angf(3,j) + ausr(3,j) + a(3,j)
-     % + arpr(3,j))
+     % + arpr(3,j) + apn(3,j))
         end do
 c
 c Advance Keplerian Hamiltonian (Jacobi/helio coords for Big/Small bodies)
@@ -3417,8 +3423,8 @@ c
       include 'mercury.inc'
 c
 c Input/Output
-      integer nbod,nbig,stat(nbod),algor,opt(8),dtflag,ngflag,opflag
-      integer colflag,lmem(NMESS),nclo,iclo(CMAX),jclo(CMAX)
+      integer nbod,nbig,stat(nbod),algor,opt(8),dtflag,ngflag
+      integer opflag,colflag,lmem(NMESS),nclo,iclo(CMAX),jclo(CMAX)
       real*8 time,tstart,h0,tol,rmax,en(3),am(3),jcen(3),rcen
       real*8 m(nbod),x(3,nbod),v(3,nbod),s(3,nbod),rphys(nbod)
       real*8 rce(nbod),rcrit(nbod),ngf(4,nbod),tclo(CMAX),dclo(CMAX)
@@ -3430,6 +3436,7 @@ c Local
       integer j,nce,ice(NMAX),jce(NMAX),ce(NMAX),iflag
       real*8 a(3,NMAX),hby2,hrec,x0(3,NMAX),v0(3,NMAX),mvsum(3),temp
       real*8 angf(3,NMAX),ausr(3,NMAX),arpr(3,NMAX)
+      real*8 apn(3,NMAX)
       external mfo_hkce
 c
 c------------------------------------------------------------------------------
@@ -3454,6 +3461,7 @@ c If accelerations from previous call are not valid, calculate them now
         end do
 c If required, apply non-gravitational, radiation force, PR drag
 c and user-defined forces
+        if (opt(7).eq.1) call mfo_pn (nbod,nbig,m,x,v,apn)
         if (opt(8).eq.1) call mfo_user (time,jcen,nbod,nbig,m,x,v,ausr)
         if (ngflag.eq.1.or.ngflag.eq.3) call mfo_ngf (nbod,x,v,angf,ngf)
         if (ngflag.eq.2.or.ngflag.eq.3) call mfo_pr (nbod,x,v,arpr,
@@ -3463,11 +3471,11 @@ c
 c Advance interaction Hamiltonian for H/2
       do j = 2, nbod
         v(1,j) = v(1,j)  +  hby2 * (angf(1,j) + ausr(1,j) + a(1,j)
-     % + arpr(1,j))
+     % + arpr(1,j) + apn(1,j))
         v(2,j) = v(2,j)  +  hby2 * (angf(2,j) + ausr(2,j) + a(2,j)
-     % + arpr(2,j))
+     % + arpr(2,j) + apn(2,j))
         v(3,j) = v(3,j)  +  hby2 * (angf(3,j) + ausr(3,j) + a(3,j)
-     % + arpr(3,j))
+     % + arpr(3,j) + apn(3,j))
       end do
 c
 c Advance solar Hamiltonian for H/2
@@ -3543,17 +3551,18 @@ c
 c
 c Advance interaction Hamiltonian for H/2
       call mfo_hy (jcen,nbod,nbig,m,x,rcrit,a,stat)
+      if (opt(7).eq.1) call mfo_pn (nbod,nbig,m,x,v,apn)
       if (opt(8).eq.1) call mfo_user (time,jcen,nbod,nbig,m,x,v,ausr)
       if (ngflag.eq.1.or.ngflag.eq.3) call mfo_ngf (nbod,x,v,angf,ngf)
       if (ngflag.eq.2.or.ngflag.eq.3) call mfo_pr (nbod,x,v,arpr,ngf)
 c
       do j = 2, nbod
         v(1,j) = v(1,j)  +  hby2 * (angf(1,j) + ausr(1,j) + a(1,j)
-     % + arpr(1,j))
+     % + arpr(1,j) + apn(1,j))
         v(2,j) = v(2,j)  +  hby2 * (angf(2,j) + ausr(2,j) + a(2,j)
-     % + arpr(2,j))
+     % + arpr(2,j) + apn(2,j))
         v(3,j) = v(3,j)  +  hby2 * (angf(3,j) + ausr(3,j) + a(3,j)
-     % + arpr(3,j))
+     % + arpr(3,j) + apn(3,j))
       end do
 c
 c------------------------------------------------------------------------------
@@ -3741,8 +3750,8 @@ c
       include 'mercury.inc'
 c
 c Input/Output
-      integer nbod,nbig,stat(nbod),algor,opt(8),dtflag,ngflag,opflag
-      integer colflag,lmem(NMESS),nclo,iclo(CMAX),jclo(CMAX)
+      integer nbod,nbig,stat(nbod),algor,opt(8),dtflag,ngflag
+      integer opflag,colflag,lmem(NMESS),nclo,iclo(CMAX),jclo(CMAX)
       real*8 time,tstart,h0,tol,rmax,en(3),am(3),jcen(3),rcen
       real*8 m(nbod),x(3,nbod),v(3,nbod),s(3,nbod),rphys(nbod)
       real*8 rce(nbod),rcrit(nbod),ngf(4,nbod),tclo(CMAX),dclo(CMAX)
@@ -3755,6 +3764,7 @@ c Local
       real*8 xj(3,NMAX),vj(3,NMAX),a(3,NMAX),gm(NMAX),hby2,thit1,temp
       real*8 msofar,minside,x0(3,NMAX),v0(3,NMAX),dhit(CMAX),thit(CMAX)
       real*8 angf(3,NMAX),ausr(3,NMAX),arpr(3,NMAX)
+      real*8 apn(3,NMAX)
 c
 c------------------------------------------------------------------------------
 c
@@ -3783,6 +3793,7 @@ c
         end do
 c If required, apply non-gravitational, radiation force, PR drag
 c and user-defined forces
+        if (opt(7).eq.1) call mfo_pn (nbod,nbig,m,x,v,apn)
         if (opt(8).eq.1) call mfo_user (time,jcen,nbod,nbig,m,x,v,ausr)
         if (ngflag.eq.1.or.ngflag.eq.3) call mfo_ngf (nbod,x,v,angf,ngf)
         if (ngflag.eq.2.or.ngflag.eq.3) call mfo_pr (nbod,x,v,arpr,
@@ -3792,11 +3803,11 @@ c
 c Advance interaction Hamiltonian for H/2
       do j = 2, nbod
         v(1,j) = v(1,j)  +  hby2 * (angf(1,j) + ausr(1,j) + a(1,j)
-     % + arpr(1,j))
+     % + arpr(1,j) + apn(1,j))
         v(2,j) = v(2,j)  +  hby2 * (angf(2,j) + ausr(2,j) + a(2,j)
-     % + arpr(2,j))
+     % + arpr(2,j) + apn(2,j))
         v(3,j) = v(3,j)  +  hby2 * (angf(3,j) + ausr(3,j) + a(3,j)
-     % + arpr(3,j))
+     % + arpr(3,j) + apn(3,j))
       end do
 c
 c Save current coordinates and velocities
@@ -3824,17 +3835,18 @@ c Check for close-encounter minima during drift step
 c
 c Advance interaction Hamiltonian for H/2
       call mfo_mvs (jcen,nbod,nbig,m,x,xj,a,stat)
+      if (opt(7).eq.1) call mfo_pn (nbod,nbig,m,x,v,apn)
       if (opt(8).eq.1) call mfo_user (time,jcen,nbod,nbig,m,x,v,ausr)
       if (ngflag.eq.1.or.ngflag.eq.3) call mfo_ngf (nbod,x,v,angf,ngf)
       if (ngflag.eq.2.or.ngflag.eq.3) call mfo_pr (nbod,x,v,arpr,ngf)
 c
       do j = 2, nbod
         v(1,j) = v(1,j)  +  hby2 * (angf(1,j) + ausr(1,j) + a(1,j)
-     % + arpr(1,j))
+     % + arpr(1,j) + apn(1,j))
         v(2,j) = v(2,j)  +  hby2 * (angf(2,j) + ausr(2,j) + a(2,j)
-     % + arpr(2,j))
+     % + arpr(2,j) + apn(2,j))
         v(3,j) = v(3,j)  +  hby2 * (angf(3,j) + ausr(3,j) + a(3,j)
-     % + arpr(3,j))
+     % + arpr(3,j) + apn(3,j))
       end do
 c
 c------------------------------------------------------------------------------
@@ -4237,7 +4249,8 @@ c
       include 'mercury.inc'
 c
 c Input/Output
-      integer nbod,nbig,ngflag,stat(nbod),opt(8),nce,ice(nce),jce(nce)
+      integer nbod,nbig,ngflag,stat(nbod),opt(8),nce,ice(nce)
+      integer jce(nce)
       real*8 time,jcen(3),m(nbod),x(3,nbod),v(3,nbod),s(3,nbod)
       real*8 a(3,nbod),ngf(4,nbod),rcrit(nbod)
 c
@@ -4544,7 +4557,8 @@ c
       include 'mercury.inc'
 c
 c Input/Output
-      integer nbod,nbig,stat(nbod),ngflag,opt(8),nce,ice(nce),jce(nce)
+      integer nbod,nbig,stat(nbod),ngflag,opt(8),nce,ice(nce)
+      integer jce(nce)
       real*8 time,jcen(3),rcrit(nbod),ngf(4,nbod),m(nbod)
       real*8 x(3,nbod),v(3,nbod),a(3,nbod),spin(3,nbod)
 c
@@ -4928,13 +4942,12 @@ c
 c
 c%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 c
-c      MFO_PN.FOR    (ErikSoft   3 October 2000)
+c      MFO_PN.FOR    (Ye   26 November 2015)
 c
 c%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 c
-c Author: John E. Chambers
+c Author: John E. Chambers and Quan-Zhi Ye
 c
-c ****** To be completed at a later date ******
 c
 c Calculates post-Newtonian relativistic corrective accelerations for a set
 c of NBOD bodies (NBIG of which are Big).
@@ -4954,16 +4967,23 @@ c
 c Input/Output
       integer nbod, nbig
       real*8 m(nbod), x(3,nbod), v(3,nbod), a(3,nbod)
+      real*8 r2,v2,vdotn,cnst1
 c
 c Local
       integer j
 c
 c------------------------------------------------------------------------------
 c
-      do j = 1, nbod
-        a(1,j) = 0.d0
-        a(2,j) = 0.d0
-        a(3,j) = 0.d0
+      do j = 2, nbod
+        r2 = x(1,j)*x(1,j) + x(2,j)*x(2,j) + x(3,j)*x(3,j)
+        v2 = v(1,j)*v(1,j) + v(2,j)*v(2,j) + v(3,j)*v(3,j)
+        vdotn = v(1,j)*x(1,j)/sqrt(r2) + v(2,j)*x(2,j)/sqrt(r2)
+     % + v(3,j)*x(3,j)/sqrt(r2)
+        cnst1 = K2/sqrt(r2) + 1.5*vdotn*vdotn - v2
+     
+        a(1,j) = 2*K2/r2*(cnst1*x(1,j)/sqrt(r2) + vdotn*v(1,j))/CS/CS
+        a(2,j) = 2*K2/r2*(cnst1*x(2,j)/sqrt(r2) + vdotn*v(2,j))/CS/CS
+        a(3,j) = 2*K2/r2*(cnst1*x(3,j)/sqrt(r2) + vdotn*v(3,j))/CS/CS
       end do
 c
 c------------------------------------------------------------------------------
@@ -4977,7 +4997,7 @@ c      MFO_PR.FOR    (Ye   17 September 2014)
 c
 c%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 c
-c Author: Quan-Zhi Ye
+c Author: John E. Chambers and Quan-Zhi Ye
 c
 c Calculates radiation pressure and Poynting-Robertson drag for a set
 c of NBOD bodies (NBIG of which are Big).
@@ -5769,6 +5789,7 @@ c Read integration parameters
             goto 661
           end if
         end if
+        if (j.eq.14.and.(c1.eq.'y'.or.c1.eq.'Y')) opt(7) = 1
         if (j.eq.15.and.(c1.eq.'y'.or.c1.eq.'Y')) opt(8) = 1
         if (j.eq.16) read (c80,*,err=661) rmax
         if (j.eq.17) read (c80,*,err=661) rcen
@@ -6623,7 +6644,8 @@ c
       include 'mercury.inc'
 c
 c Input/Output
-      integer i0, nbod, nbig, stat(nbod), opt(8), ejflag, lmem(NMESS)
+      integer i0, nbod, nbig, stat(nbod), opt(8), ejflag
+      integer lmem(NMESS)
       real*8 time, tstart, rmax, en(3), am(3), jcen(3)
       real*8 m(nbod), x(3,nbod), v(3,nbod), s(3,nbod)
       character*80 outfile, mem(NMESS)
